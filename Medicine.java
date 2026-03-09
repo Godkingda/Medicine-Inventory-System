@@ -5,6 +5,7 @@ public class Medicine {
     private int quantity;
     private String expiryDate;
 
+    // Constructor
     public Medicine(int id, String name, int quantity, String expiryDate) {
         this.id = id;
         this.name = name;
@@ -12,6 +13,7 @@ public class Medicine {
         this.expiryDate = expiryDate;
     }
 
+    // Getters
     public int getId() {
         return id;
     }
@@ -28,14 +30,22 @@ public class Medicine {
         return expiryDate;
     }
 
+    // Setter
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+    // Display medicine information
     public void displayDetails() {
-        System.out.println("ID: " + id +
-                " | Name: " + name +
-                " | Quantity: " + quantity +
-                " | Expiry: " + expiryDate);
+        System.out.println(toString());
+    }
+
+    // Convert object to readable string
+    @Override
+    public String toString() {
+        return "ID: " + id +
+               " | Name: " + name +
+               " | Quantity: " + quantity +
+               " | Expiry: " + expiryDate;
     }
 }
