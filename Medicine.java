@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+
 public class Medicine {
 
     private int id;
@@ -5,7 +7,6 @@ public class Medicine {
     private int quantity;
     private String expiryDate;
 
-    // Constructor
     public Medicine(int id, String name, int quantity, String expiryDate) {
         this.id = id;
         this.name = name;
@@ -35,17 +36,32 @@ public class Medicine {
         this.quantity = quantity;
     }
 
-    // Display medicine information
+    // Expiry check
+    public boolean isExpired() {
+        LocalDate today = LocalDate.now();
+        LocalDate expiry = LocalDate.parse(expiryDate);
+        return expiry.isBefore(today);
+    }
+
+    // Display method
     public void displayDetails() {
         System.out.println(toString());
     }
 
-    // Convert object to readable string
+    // Convert object to readable format
     @Override
     public String toString() {
+
+        String status = "";
+
+        if (isExpired()) {
+            status = " ⚠ EXPIRED";
+        }
+
         return "ID: " + id +
                " | Name: " + name +
                " | Quantity: " + quantity +
-               " | Expiry: " + expiryDate;
+               " | Expiry: " + expiryDate +
+               status;
     }
 }
