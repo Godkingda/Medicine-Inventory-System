@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-public class Medicine {
+public abstract class Medicine {
 
     private int id;
     private String name;
@@ -14,7 +14,6 @@ public class Medicine {
         this.expiryDate = expiryDate;
     }
 
-    // Getters
     public int getId() {
         return id;
     }
@@ -31,37 +30,24 @@ public class Medicine {
         return expiryDate;
     }
 
-    // Setter
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    // Expiry check
-    public boolean isExpired() {
-        LocalDate today = LocalDate.now();
-        LocalDate expiry = LocalDate.parse(expiryDate);
-        return expiry.isBefore(today);
-    }
+    public abstract void displayDetails();
 
-    // Display method
-    public void displayDetails() {
-        System.out.println(toString());
-    }
+    public abstract boolean isExpired();
 
-    // Convert object to readable format
     @Override
     public String toString() {
-
         String status = "";
-
         if (isExpired()) {
             status = " ⚠ EXPIRED";
         }
-
         return "ID: " + id +
-               " | Name: " + name +
-               " | Quantity: " + quantity +
-               " | Expiry: " + expiryDate +
-               status;
+                " | Name: " + name +
+                " | Quantity: " + quantity +
+                " | Expiry: " + expiryDate +
+                status;
     }
 }
