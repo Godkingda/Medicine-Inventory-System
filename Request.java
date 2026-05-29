@@ -10,12 +10,13 @@ public class Request {
         this.quantity = quantity;
     }
 
-    public void displayRequest() {
+    public String getDepartment()   { return department; }
+    public String getMedicineName() { return medicineName; }
+    public int getQuantity()        { return quantity; }
 
-        System.out.println(
-            "Department: " + department +
-            " | Medicine: " + medicineName +
-            " | Quantity: " + quantity
-        );
+    public void displayRequest() {
+        System.out.println("Department: " + department +
+                           " | Medicine: " + medicineName +
+                           " | Quantity: " + quantity);
     }
 }

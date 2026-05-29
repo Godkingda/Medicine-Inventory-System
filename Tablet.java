@@ -1,20 +1,17 @@
-import java.time.LocalDate;
-
+// Tablet — subclass of Medicine (Inheritance requirement)
 public class Tablet extends Medicine {
 
-    public Tablet(int id, String name, int quantity, String expiryDate) {
-        super(id, name, quantity, expiryDate);
+    private int dosageMg;
+
+    public Tablet(int id, String name, int quantity, String expiryDate, int dosageMg) {
+        super(id, name, quantity, expiryDate, "Tablet");
+        this.dosageMg = dosageMg;
     }
 
-    @Override
-    public void displayDetails() {
-        System.out.println("[Tablet] " + toString());
-    }
+    public int getDosageMg() { return dosageMg; }
 
     @Override
-    public boolean isExpired() {
-        LocalDate today = LocalDate.now();
-        LocalDate expiry = LocalDate.parse(getExpiryDate());
-        return expiry.isBefore(today);
+    public String getExtraInfo() {
+        return "Dosage: " + dosageMg + "mg";
     }
 }

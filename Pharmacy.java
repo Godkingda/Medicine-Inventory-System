@@ -1,22 +1,34 @@
+// Pharmacy class (OOP Classes requirement)
 public class Pharmacy {
 
     private String name;
-    private String address;
+    private String location;
+    private String contactNumber;
 
-    public Pharmacy(String name, String address) {
+    public Pharmacy(String name, String location, String contactNumber) {
         this.name = name;
-        this.address = address;
+        this.location = location;
+        this.contactNumber = contactNumber;
     }
 
-    public String getName() {
-        return name;
-    }
+    // Getters
+    public String getName()          { return name; }
+    public String getLocation()      { return location; }
+    public String getContactNumber() { return contactNumber; }
 
-    public String getAddress() {
-        return address;
-    }
+    // Setters
+    public void setName(String name)                   { this.name = name; }
+    public void setLocation(String location)           { this.location = location; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
 
     public void displayDetails() {
-        System.out.println("Pharmacy: " + name + " | Address: " + address);
+        System.out.println("Pharmacy: " + name +
+                           " | Location: " + location +
+                           " | Contact: " + contactNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "Pharmacy{name='" + name + "', location='" + location + "', contact='" + contactNumber + "'}";
     }
 }

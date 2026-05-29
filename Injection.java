@@ -1,20 +1,17 @@
-import java.time.LocalDate;
-
+// Injection — subclass of Medicine (Inheritance requirement)
 public class Injection extends Medicine {
 
-    public Injection(int id, String name, int quantity, String expiryDate) {
-        super(id, name, quantity, expiryDate);
+    private String route; // e.g., "IV", "IM", "SC"
+
+    public Injection(int id, String name, int quantity, String expiryDate, String route) {
+        super(id, name, quantity, expiryDate, "Injection");
+        this.route = route;
     }
 
-    @Override
-    public void displayDetails() {
-        System.out.println("[Injection] " + toString());
-    }
+    public String getRoute() { return route; }
 
     @Override
-    public boolean isExpired() {
-        LocalDate today = LocalDate.now();
-        LocalDate expiry = LocalDate.parse(getExpiryDate());
-        return expiry.isBefore(today);
+    public String getExtraInfo() {
+        return "Route: " + route;
     }
 }

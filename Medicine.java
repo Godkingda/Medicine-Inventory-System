@@ -1,53 +1,64 @@
 import java.time.LocalDate;
 
-public abstract class Medicine {
+// Base class for all medicine types (supports Inheritance requirement)
+public class Medicine {
 
     private int id;
     private String name;
     private int quantity;
     private String expiryDate;
+    private String category; // Added for category search
 
-    public Medicine(int id, String name, int quantity, String expiryDate) {
+    public Medicine(int id, String name, int quantity, String expiryDate, String category) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.expiryDate = expiryDate;
+        this.category = category;
     }
 
-    public int getId() {
-        return id;
+    // Backward-compatible constructor (defaults category to "General")
+    public Medicine(int id, String name, int quantity, String expiryDate) {
+        this(id, name, quantity, expiryDate, "General");
     }
 
-    public String getName() {
-        return name;
+    // Getters
+    public int getId()           { return id; }
+    public String getName()      { return name; }
+    public int getQuantity()     { return quantity; }
+    public String getExpiryDate(){ return expiryDate; }
+    public String getCategory()  { return category; }
+
+    // Setters
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setCategory(String category) { this.category = category; }
+
+    // Expiry check
+    public boolean isExpired() {
+        LocalDate today = LocalDate.now();
+        LocalDate expiry = LocalDate.parse(expiryDate);
+        return expiry.isBefore(today);
     }
 
-    public int getQuantity() {
-        return quantity;
+    // Display method
+    public void displayDetails() {
+        System.out.println(toString());
     }
 
-    public String getExpiryDate() {
-        return expiryDate;
+    // Subclasses can override for extra info
+    public String getExtraInfo() {
+        return "";
     }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public abstract void displayDetails();
-
-    public abstract boolean isExpired();
 
     @Override
     public String toString() {
-        String status = "";
-        if (isExpired()) {
-            status = " ⚠ EXPIRED";
-        }
+        String status = isExpired() ? " ⚠ EXPIRED" : "";
+        String extra = getExtraInfo().isEmpty() ? "" : " | " + getExtraInfo();
         return "ID: " + id +
-                " | Name: " + name +
-                " | Quantity: " + quantity +
-                " | Expiry: " + expiryDate +
-                status;
+               " | Name: " + name +
+               " | Category: " + category +
+               " | Quantity: " + quantity +
+               " | Expiry: " + expiryDate +
+               extra + status;
     }
 }

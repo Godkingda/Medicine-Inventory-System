@@ -1,20 +1,17 @@
-import java.time.LocalDate;
-
+// Syrup — subclass of Medicine (Inheritance requirement)
 public class Syrup extends Medicine {
 
-    public Syrup(int id, String name, int quantity, String expiryDate) {
-        super(id, name, quantity, expiryDate);
+    private int volumeMl;
+
+    public Syrup(int id, String name, int quantity, String expiryDate, int volumeMl) {
+        super(id, name, quantity, expiryDate, "Syrup");
+        this.volumeMl = volumeMl;
     }
 
-    @Override
-    public void displayDetails() {
-        System.out.println("[Syrup] " + toString());
-    }
+    public int getVolumeMl() { return volumeMl; }
 
     @Override
-    public boolean isExpired() {
-        LocalDate today = LocalDate.now();
-        LocalDate expiry = LocalDate.parse(getExpiryDate());
-        return expiry.isBefore(today);
+    public String getExtraInfo() {
+        return "Volume: " + volumeMl + "ml";
     }
 }
