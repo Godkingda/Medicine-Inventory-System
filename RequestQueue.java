@@ -1,54 +1,41 @@
-// Circular Queue for medicine requests — fixes the linear array limitation
+// ============================================================
+// ARRAY + QUEUE: RequestQueue uses a fixed-size array (Request[])
+// to implement a queue (FIFO) for department medicine requests.
+// ============================================================
 public class RequestQueue {
 
-    private Request[] queue;
-    private int front, rear, size, capacity;
+    private Request[] queue; // ARRAY
+    private int front;
+    private int rear;
+    private int capacity;
 
     public RequestQueue(int capacity) {
         this.capacity = capacity;
-        queue = new Request[capacity];
-        front = 0;
-        rear = -1;
-        size = 0;
+        this.queue    = new Request[capacity];
+        this.front    = 0;
+        this.rear     = -1;
     }
 
-    public boolean enqueue(Request request) {
-        if (size == capacity) {
-            System.out.println("Request queue is full.");
-            return false;
-        }
-        rear = (rear + 1) % capacity; // Circular wrap
-        queue[rear] = request;
-        size++;
+    public boolean isEmpty() { return rear < front; }
+    public boolean isFull()  { return rear == capacity - 1; }
+
+    public void enqueue(Request req) {
+        if (isFull()) { System.out.println("Request queue is full."); return; }
+        queue[++rear] = req;
         System.out.println("Request added to queue.");
-        return true;
     }
 
     public Request dequeue() {
-        if (size == 0) {
-            System.out.println("No pending requests.");
-            return null;
-        }
-        Request req = queue[front];
-        queue[front] = null;
-        front = (front + 1) % capacity; // Circular wrap
-        size--;
-        return req;
+        if (isEmpty()) { System.out.println("No requests in queue."); return null; }
+        return queue[front++];
     }
 
     public void displayQueue() {
-        if (size == 0) {
-            System.out.println("Request queue is empty.");
-            return;
-        }
-        System.out.println("=== Pending Requests ===");
-        for (int i = 0; i < size; i++) {
-            int index = (front + i) % capacity;
-            System.out.println((i + 1) + ". ");
-            queue[index].displayRequest();
+        if (isEmpty()) { System.out.println("Queue is empty."); return; }
+        System.out.println("\nPending Requests:");
+        for (int i = front; i <= rear; i++) {
+            System.out.print((i - front + 1) + ". ");
+            queue[i].displayDetails();
         }
     }
-
-    public int getSize() { return size; }
-    public boolean isEmpty() { return size == 0; }
 }

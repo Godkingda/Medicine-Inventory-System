@@ -1,37 +1,43 @@
-// Hospital class (OOP Classes requirement)
-public class Hospital {
+// ============================================================
+// CLASS (Domain): Hospital — one of the 5 required classes.
+// Represents a hospital that requests and uses medicines.
+// ENCAPSULATION: private fields, public getters/setters.
+// Implements Displayable interface (ABSTRACTION).
+// ============================================================
+public class Hospital implements Displayable {
 
-    private String hospitalId;
-    private String name;
+    private int    hospitalId;
+    private String hospitalName;
     private String address;
-    private int bedCount;
+    private int    totalBeds;
+    private String contactNumber;
 
-    public Hospital(String hospitalId, String name, String address, int bedCount) {
-        this.hospitalId = hospitalId;
-        this.name = name;
-        this.address = address;
-        this.bedCount = bedCount;
+    public Hospital(int hospitalId, String hospitalName, String address, int totalBeds, String contactNumber) {
+        this.hospitalId    = hospitalId;
+        this.hospitalName  = hospitalName;
+        this.address       = address;
+        this.totalBeds     = totalBeds;
+        this.contactNumber = contactNumber;
     }
 
     // Getters
-    public String getHospitalId() { return hospitalId; }
-    public String getName()       { return name; }
-    public String getAddress()    { return address; }
-    public int getBedCount()      { return bedCount; }
+    public int    getHospitalId()    { return hospitalId; }
+    public String getHospitalName()  { return hospitalName; }
+    public String getAddress()       { return address; }
+    public int    getTotalBeds()     { return totalBeds; }
+    public String getContactNumber() { return contactNumber; }
 
     // Setters
-    public void setAddress(String address)  { this.address = address; }
-    public void setBedCount(int bedCount)   { this.bedCount = bedCount; }
-
-    public void displayDetails() {
-        System.out.println("Hospital ID: " + hospitalId +
-                           " | Name: " + name +
-                           " | Address: " + address +
-                           " | Beds: " + bedCount);
-    }
+    public void setAddress(String address)       { this.address = address; }
+    public void setTotalBeds(int totalBeds)      { this.totalBeds = totalBeds; }
+    public void setContactNumber(String contact) { this.contactNumber = contact; }
 
     @Override
-    public String toString() {
-        return "Hospital{id='" + hospitalId + "', name='" + name + "', beds=" + bedCount + "}";
+    public void displayDetails() {
+        System.out.println("[Hospital] ID: " + hospitalId +
+                           " | Name: " + hospitalName +
+                           " | Address: " + address +
+                           " | Beds: " + totalBeds +
+                           " | Contact: " + contactNumber);
     }
 }

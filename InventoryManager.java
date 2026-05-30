@@ -1,157 +1,126 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.io.*;
 
+// ============================================================
+// LINKED LIST: Inventory stored as a custom singly linked list.
+//   head → MedicineNode → MedicineNode → ... → null
+//
+// SEARCHING: Linear search by name (traverses list node by node).
+// SORTING:   Bubble sort on linked list by expiry date.
+// ============================================================
 public class InventoryManager {
 
-    private ArrayList<Medicine> inventory = new ArrayList<>();
+    private MedicineNode head; // first node of the linked list
+    private int size;
 
-    // LinkedList for dynamic stock record tracking (DSA requirement)
-    private MedicineLinkedList stockRecords = new MedicineLinkedList();
+    public InventoryManager() {
+        head = null;
+        size = 0;
+    }
 
-    // Add medicine to both ArrayList inventory and LinkedList stock records
+    // ---- ADD: append new node at end ----
     public void addMedicine(Medicine med) {
-        inventory.add(med);
-        stockRecords.addMedicine(med); // Keep LinkedList in sync
-        System.out.println("Medicine added successfully.");
+        MedicineNode newNode = new MedicineNode(med);
+        if (head == null) {
+            head = newNode;
+        } else {
+            MedicineNode current = head;
+            while (current.next != null) current = current.next;
+            current.next = newNode;
+        }
+        size++;
+        System.out.println("[" + med.getCategory() + "] '" + med.getName() + "' added to inventory.");
     }
 
+    // ---- DISPLAY: traverse and print all nodes ----
     public void displayInventory() {
-        if (inventory.isEmpty()) {
-            System.out.println("Inventory is empty.");
-            return;
+        if (head == null) { System.out.println("Inventory is empty."); return; }
+        System.out.println("\n========= Inventory (" + size + " items) =========");
+        MedicineNode current = head;
+        int pos = 1;
+        while (current != null) {
+            System.out.print(pos + ". ");
+            current.data.displayDetails();
+            current = current.next;
+            pos++;
         }
-        for (Medicine med : inventory) {
-            med.displayDetails();
-        }
+        System.out.println("===========================================");
     }
 
-    // Search by name (case-insensitive)
+    // ---- SEARCHING: linear search by name ----
     public Medicine searchMedicine(String name) {
-        for (Medicine med : inventory) {
-            if (med.getName().equalsIgnoreCase(name)) {
-                return med;
-            }
+        MedicineNode current = head;
+        while (current != null) {
+            if (current.data.getName().equalsIgnoreCase(name)) return current.data;
+            current = current.next;
         }
         return null;
     }
 
-    // Search by category (DSA + case study requirement)
-    public ArrayList<Medicine> searchByCategory(String category) {
-        ArrayList<Medicine> results = new ArrayList<>();
-        for (Medicine med : inventory) {
-            if (med.getCategory().equalsIgnoreCase(category)) {
-                results.add(med);
-            }
-        }
-        return results;
-    }
-
-    // Display the LinkedList stock records separately
-    public void displayStockRecords() {
-        stockRecords.displayStockRecords();
-    }
-
-    // Remove from both structures by ID
-    public boolean removeMedicine(int id) {
-        for (int i = 0; i < inventory.size(); i++) {
-            if (inventory.get(i).getId() == id) {
-                inventory.remove(i);
-                stockRecords.removeMedicine(id);
-                System.out.println("Medicine removed successfully.");
-                return true;
-            }
-        }
-        System.out.println("Medicine with ID " + id + " not found.");
-        return false;
-    }
-
+    // ---- SORTING: bubble sort by expiry date ----
     public void sortByExpiry() {
-        if (inventory.isEmpty()) {
-            System.out.println("Inventory is empty.");
-            return;
-        }
-        Collections.sort(inventory, new Comparator<Medicine>() {
-            public int compare(Medicine m1, Medicine m2) {
-                return m1.getExpiryDate().compareTo(m2.getExpiryDate());
+        if (head == null) { System.out.println("Inventory is empty."); return; }
+        boolean swapped;
+        do {
+            swapped = false;
+            MedicineNode curr = head;
+            while (curr.next != null) {
+                if (curr.data.getExpiryDate().compareTo(curr.next.data.getExpiryDate()) > 0) {
+                    Medicine temp  = curr.data;
+                    curr.data      = curr.next.data;
+                    curr.next.data = temp;
+                    swapped = true;
+                }
+                curr = curr.next;
             }
-        });
-        System.out.println("Medicines sorted by expiry date:");
+        } while (swapped);
+        System.out.println("Sorted by expiry date:");
         displayInventory();
     }
 
-    // =============================
-    // SAVE INVENTORY TO FILE
-    // =============================
+    // ---- SAVE to file ----
     public void saveInventory() {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter("inventory.txt"));
-            for (Medicine med : inventory) {
-                // Format: type,id,name,quantity,expiryDate,category,extraInfo
-                String type = med.getClass().getSimpleName();
-                String extra = med.getExtraInfo();
-                writer.println(type + "," +
-                               med.getId() + "," +
-                               med.getName() + "," +
-                               med.getQuantity() + "," +
-                               med.getExpiryDate() + "," +
-                               med.getCategory() + "," +
-                               extra);
+            MedicineNode current = head;
+            while (current != null) {
+                writer.println(current.data.toString());
+                current = current.next;
             }
             writer.close();
-            System.out.println("Inventory saved successfully.");
-        } catch (IOException e) {
-            System.out.println("Error saving inventory.");
-        }
+            System.out.println("Inventory saved.");
+        } catch (IOException e) { System.out.println("Error saving inventory."); }
     }
 
-    // =============================
-    // LOAD INVENTORY FROM FILE
-    // =============================
+    // ---- LOAD from file ----
     public void loadInventory() {
         try {
             File file = new File("inventory.txt");
             if (!file.exists()) return;
-
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",", 7);
-                if (parts.length < 6) continue;
-
-                String type   = parts[0];
-                int id        = Integer.parseInt(parts[1]);
-                String name   = parts[2];
-                int qty       = Integer.parseInt(parts[3]);
-                String expiry = parts[4];
-                String extra  = parts.length == 7 ? parts[6] : "";
-
-                Medicine med;
+                String[] p = line.split(",");
+                String type    = p[0];
+                int    id      = Integer.parseInt(p[1]);
+                String name    = p[2];
+                int    qty     = Integer.parseInt(p[3]);
+                String expiry  = p[4];
+                double price   = Double.parseDouble(p[5]);
+                String extra   = p.length > 6 ? p[6] : "";
                 switch (type) {
                     case "Tablet":
-                        int dosage = extra.isEmpty() ? 0 : Integer.parseInt(extra.replace("mg", "").replace("Dosage: ", "").trim());
-                        med = new Tablet(id, name, qty, expiry, dosage);
+                        addMedicine(new Tablet(id, name, qty, expiry, price, Integer.parseInt(extra)));
                         break;
                     case "Injection":
-                        String route = extra.isEmpty() ? "IV" : extra.replace("Route: ", "").trim();
-                        med = new Injection(id, name, qty, expiry, route);
+                        addMedicine(new Injection(id, name, qty, expiry, price, extra));
                         break;
                     case "Syrup":
-                        int vol = extra.isEmpty() ? 0 : Integer.parseInt(extra.replace("ml", "").replace("Volume: ", "").trim());
-                        med = new Syrup(id, name, qty, expiry, vol);
-                        break;
-                    default:
-                        med = new Medicine(id, name, qty, expiry);
+                        addMedicine(new Syrup(id, name, qty, expiry, price));
                         break;
                 }
-                inventory.add(med);
-                stockRecords.addMedicine(med);
             }
             reader.close();
-            System.out.println("Inventory loaded from file.");
-        } catch (IOException e) {
-            System.out.println("Error loading inventory.");
-        }
+            System.out.println("Inventory loaded.");
+        } catch (IOException e) { System.out.println("Error loading inventory."); }
     }
 }

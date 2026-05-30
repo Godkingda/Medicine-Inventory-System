@@ -1,266 +1,190 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
+// ============================================================
+// MAIN: Entry point — wires all components together.
+//
+// Rubric coverage:
+//  ✅ Array        — BatchStack (Medicine[]) + RequestQueue (Request[])
+//  ✅ Linked List  — InventoryManager (custom singly linked list)
+//  ✅ Stack        — BatchStack (LIFO, push/pop/peek)
+//  ✅ Queue        — RequestQueue (FIFO, enqueue/dequeue)
+//  ✅ Searching    — Linear search by name in InventoryManager
+//  ✅ Sorting      — Bubble sort by expiry date in InventoryManager
+//  ✅ Graph        — DistributionGraph (adjacency list)
+//  ✅ Classes (5)  — Medicine, InventoryManager, Pharmacy, Supplier, Hospital
+//  ✅ Encapsulation— Private fields + getters/setters in all classes
+//  ✅ Inheritance  — Tablet, Injection, Syrup extend Medicine
+//  ✅ Abstraction  — abstract class Medicine + interface Displayable
+// ============================================================
 public class Main {
 
     public static void main(String[] args) {
 
-        InventoryManager manager = new InventoryManager();
+        InventoryManager manager      = new InventoryManager();
+        BatchStack       batchStack   = new BatchStack(100);
+        RequestQueue     requestQueue = new RequestQueue(100);
+        DistributionGraph graph       = new DistributionGraph();
+
+        // Domain class instances (Pharmacy, Supplier, Hospital)
+        Pharmacy pharmacy = new Pharmacy(1, "City Pharmacy", "Main Street", "0300-1234567");
+        Supplier supplier = new Supplier(1, "MediCorp Ltd", "Ali Hassan", "ali@medicorp.com", "PharmaBrand");
+        Hospital hospital = new Hospital(1, "General Hospital", "Model Town", 500, "042-9999999");
+
         manager.loadInventory();
-
-        BatchStack batchStack = new BatchStack(100);
-        RequestQueue requestQueue = new RequestQueue(100);
-        DistributionGraph graph = new DistributionGraph();
-
-        // OOP demo: instantiate Pharmacy, Supplier, Hospital objects
-        Pharmacy pharmacy = new Pharmacy("City Pharmacy", "Delhi", "011-12345678");
-        Supplier supplier = new Supplier("SUP001", "MedSupply Co.", "medsupply@email.com", "Tablets");
-        Hospital hospital = new Hospital("HSP001", "Apollo Hospital", "New Delhi", 500);
-
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("===================================");
-        System.out.println("   Medicine Inventory System");
-        System.out.println("===================================");
-        System.out.println("Pharmacy : " + pharmacy.getName() + " (" + pharmacy.getLocation() + ")");
-        System.out.println("Supplier : " + supplier.getName());
-        System.out.println("Hospital : " + hospital.getName());
-        System.out.println("===================================");
+        System.out.println("====================================================");
+        System.out.println("      Medicine Inventory System — DSA + OOP         ");
+        System.out.println("====================================================");
+        System.out.println("Linked Pharmacy : "); pharmacy.displayDetails();
+        System.out.println("Linked Supplier : "); supplier.displayDetails();
+        System.out.println("Linked Hospital : "); hospital.displayDetails();
+        System.out.println("====================================================");
 
         while (true) {
-            System.out.println("\n==== MENU ====");
-            System.out.println("--- Inventory ---");
-            System.out.println("1.  Add Medicine (General)");
-            System.out.println("2.  Add Tablet");
-            System.out.println("3.  Add Injection");
-            System.out.println("4.  Add Syrup");
-            System.out.println("5.  Display Inventory");
-            System.out.println("6.  Search by Name");
-            System.out.println("7.  Search by Category");
-            System.out.println("8.  Sort by Expiry Date");
-            System.out.println("9.  Remove Medicine");
-            System.out.println("10. Display Stock Records (LinkedList)");
-
-            System.out.println("\n--- Stack Operations ---");
-            System.out.println("11. Add Batch (Push)");
-            System.out.println("12. Use Batch (Pop)");
-            System.out.println("13. Display Batch Stack");
-
-            System.out.println("\n--- Queue Operations ---");
-            System.out.println("14. Add Medicine Request");
-            System.out.println("15. Process Request");
-            System.out.println("16. Display Request Queue");
-
-            System.out.println("\n--- Graph Operations ---");
-            System.out.println("17. Add Distribution Route");
-            System.out.println("18. Display Distribution Network");
-
-            System.out.println("\n--- OOP Info ---");
-            System.out.println("19. Display Pharmacy/Supplier/Hospital Info");
-
-            System.out.println("\n0.  Exit");
-            System.out.print("Choose option: ");
+            System.out.println("\n==== MAIN MENU ====");
+            System.out.println("-- Inventory (Linked List + Search + Sort) --");
+            System.out.println(" 1. Add Tablet");
+            System.out.println(" 2. Add Injection");
+            System.out.println(" 3. Add Syrup");
+            System.out.println(" 4. Display Inventory");
+            System.out.println(" 5. Search Medicine by Name");
+            System.out.println(" 6. Sort by Expiry Date");
+            System.out.println("\n-- Stack (Array-based) --");
+            System.out.println(" 7. Push Batch to Stack");
+            System.out.println(" 8. Pop Batch from Stack");
+            System.out.println(" 9. Display Batch Stack");
+            System.out.println("\n-- Queue (Array-based) --");
+            System.out.println("10. Add Medicine Request");
+            System.out.println("11. Process Next Request");
+            System.out.println("12. Display Request Queue");
+            System.out.println("\n-- Graph --");
+            System.out.println("13. Add Distribution Route");
+            System.out.println("14. Display Distribution Network");
+            System.out.println("\n-- Domain Classes --");
+            System.out.println("15. Display Pharmacy Info");
+            System.out.println("16. Display Supplier Info");
+            System.out.println("17. Display Hospital Info");
+            System.out.println("\n18. Save & Exit");
+            System.out.print("Choose: ");
 
             int choice = scanner.nextInt();
             scanner.nextLine();
 
             switch (choice) {
 
-                // ---- General medicine ----
+                // ---- Add Tablet ----
                 case 1: {
-                    System.out.print("Enter ID: ");
-                    int id = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter Quantity: ");
-                    int qty = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Expiry Date (YYYY-MM-DD): ");
-                    String expiry = scanner.nextLine();
-                    manager.addMedicine(new Medicine(id, name, qty, expiry));
+                    System.out.print("ID: ");                 int id  = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Name: ");               String name = scanner.nextLine();
+                    System.out.print("Quantity: ");           int qty = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Expiry (YYYY-MM-DD): ");String exp = scanner.nextLine();
+                    System.out.print("Price (Rs): ");         double price = scanner.nextDouble(); scanner.nextLine();
+                    System.out.print("Strength (mg): ");      int mg = scanner.nextInt(); scanner.nextLine();
+                    manager.addMedicine(new Tablet(id, name, qty, exp, price, mg));
                     break;
                 }
 
-                // ---- Tablet ----
+                // ---- Add Injection ----
                 case 2: {
-                    System.out.print("Enter ID: ");
-                    int id = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter Quantity: ");
-                    int qty = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Expiry Date (YYYY-MM-DD): ");
-                    String expiry = scanner.nextLine();
-                    System.out.print("Enter Dosage (mg): ");
-                    int dosage = scanner.nextInt(); scanner.nextLine();
-                    manager.addMedicine(new Tablet(id, name, qty, expiry, dosage));
+                    System.out.print("ID: ");                 int id  = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Name: ");               String name = scanner.nextLine();
+                    System.out.print("Quantity: ");           int qty = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Expiry (YYYY-MM-DD): ");String exp = scanner.nextLine();
+                    System.out.print("Price (Rs): ");         double price = scanner.nextDouble(); scanner.nextLine();
+                    System.out.print("Route (IV/IM/SC): ");   String route = scanner.nextLine();
+                    manager.addMedicine(new Injection(id, name, qty, exp, price, route));
                     break;
                 }
 
-                // ---- Injection ----
+                // ---- Add Syrup ----
                 case 3: {
-                    System.out.print("Enter ID: ");
-                    int id = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter Quantity: ");
-                    int qty = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Expiry Date (YYYY-MM-DD): ");
-                    String expiry = scanner.nextLine();
-                    System.out.print("Enter Route (e.g. IV, IM, SC): ");
-                    String route = scanner.nextLine();
-                    manager.addMedicine(new Injection(id, name, qty, expiry, route));
+                    System.out.print("ID: ");                 int id  = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Name: ");               String name = scanner.nextLine();
+                    System.out.print("Quantity: ");           int qty = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Expiry (YYYY-MM-DD): ");String exp = scanner.nextLine();
+                    System.out.print("Price (Rs): ");         double price = scanner.nextDouble(); scanner.nextLine();
+                    System.out.print("Volume (ml): ");        int vol = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Dose per spoon: ");     String dose = scanner.nextLine();
+                    manager.addMedicine(new Syrup(id, name, qty, exp, price, vol, dose));
                     break;
                 }
 
-                // ---- Syrup ----
-                case 4: {
-                    System.out.print("Enter ID: ");
-                    int id = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Name: ");
-                    String name = scanner.nextLine();
-                    System.out.print("Enter Quantity: ");
-                    int qty = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Expiry Date (YYYY-MM-DD): ");
-                    String expiry = scanner.nextLine();
-                    System.out.print("Enter Volume (ml): ");
-                    int vol = scanner.nextInt(); scanner.nextLine();
-                    manager.addMedicine(new Syrup(id, name, qty, expiry, vol));
-                    break;
-                }
+                case 4: manager.displayInventory(); break;
 
-                case 5:
-                    manager.displayInventory();
-                    break;
-
-                // ---- Search by name ----
-                case 6: {
+                case 5: {
                     System.out.print("Enter medicine name: ");
-                    String search = scanner.nextLine();
-                    Medicine result = manager.searchMedicine(search);
-                    if (result != null) {
-                        result.displayDetails();
-                    } else {
-                        System.out.println("Medicine not found.");
-                    }
+                    String name = scanner.nextLine();
+                    Medicine found = manager.searchMedicine(name);
+                    if (found != null) found.displayDetails();
+                    else System.out.println("Medicine not found.");
                     break;
                 }
 
-                // ---- Search by category ----
+                case 6: manager.sortByExpiry(); break;
+
+                // ---- Stack ----
                 case 7: {
-                    System.out.println("Categories: General, Tablet, Injection, Syrup");
-                    System.out.print("Enter category: ");
-                    String cat = scanner.nextLine();
-                    ArrayList<Medicine> catResults = manager.searchByCategory(cat);
-                    if (catResults.isEmpty()) {
-                        System.out.println("No medicines found in category: " + cat);
-                    } else {
-                        System.out.println("Found " + catResults.size() + " medicine(s):");
-                        for (Medicine m : catResults) m.displayDetails();
-                    }
+                    System.out.println("Type: 1=Tablet  2=Injection  3=Syrup");
+                    int t = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("ID: ");                 int id  = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Name: ");               String nm = scanner.nextLine();
+                    System.out.print("Quantity: ");           int qty = scanner.nextInt(); scanner.nextLine();
+                    System.out.print("Expiry (YYYY-MM-DD): ");String ex = scanner.nextLine();
+                    System.out.print("Price (Rs): ");         double pr = scanner.nextDouble(); scanner.nextLine();
+                    if      (t == 1) { System.out.print("Strength (mg): "); int mg = scanner.nextInt(); scanner.nextLine(); batchStack.push(new Tablet(id, nm, qty, ex, pr, mg)); }
+                    else if (t == 2) { System.out.print("Route: "); String ro = scanner.nextLine(); batchStack.push(new Injection(id, nm, qty, ex, pr, ro)); }
+                    else             { System.out.print("Volume (ml): "); int vl = scanner.nextInt(); scanner.nextLine(); System.out.print("Dose: "); String ds = scanner.nextLine(); batchStack.push(new Syrup(id, nm, qty, ex, pr, vl, ds)); }
                     break;
                 }
 
-                case 8:
-                    manager.sortByExpiry();
-                    break;
-
-                // ---- Remove medicine ----
-                case 9: {
-                    System.out.print("Enter ID to remove: ");
-                    int removeId = scanner.nextInt(); scanner.nextLine();
-                    manager.removeMedicine(removeId);
+                case 8: {
+                    Medicine used = batchStack.pop();
+                    if (used != null) { System.out.println("Popped batch:"); used.displayDetails(); }
                     break;
                 }
 
-                // ---- LinkedList stock records ----
-                case 10:
-                    manager.displayStockRecords();
-                    break;
+                case 9: batchStack.displayStack(); break;
 
-                // ---- Stack operations ----
+                // ---- Queue ----
+                case 10: {
+                    System.out.print("Department: ");    String dept = scanner.nextLine();
+                    System.out.print("Medicine Name: "); String med  = scanner.nextLine();
+                    System.out.print("Quantity: ");      int rqty = scanner.nextInt(); scanner.nextLine();
+                    requestQueue.enqueue(new Request(dept, med, rqty));
+                    break;
+                }
+
                 case 11: {
-                    System.out.print("Enter ID: ");
-                    int bid = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Name: ");
-                    String bname = scanner.nextLine();
-                    System.out.print("Enter Quantity: ");
-                    int bqty = scanner.nextInt(); scanner.nextLine();
-                    System.out.print("Enter Expiry Date (YYYY-MM-DD): ");
-                    String bexp = scanner.nextLine();
-                    batchStack.push(new Medicine(bid, bname, bqty, bexp));
+                    Request req = requestQueue.dequeue();
+                    if (req != null) { System.out.println("Processing:"); req.displayDetails(); }
                     break;
                 }
 
-                case 12: {
-                    Medicine usedBatch = batchStack.pop();
-                    if (usedBatch != null) {
-                        System.out.println("Using batch:");
-                        usedBatch.displayDetails();
-                    }
-                    break;
-                }
+                case 12: requestQueue.displayQueue(); break;
 
-                case 13:
-                    batchStack.displayStack();
-                    break;
-
-                // ---- Queue operations ----
-                case 14: {
-                    System.out.print("Enter Department: ");
-                    String department = scanner.nextLine();
-                    System.out.print("Enter Medicine Name: ");
-                    String medName = scanner.nextLine();
-                    System.out.print("Enter Quantity: ");
-                    int reqQty = scanner.nextInt(); scanner.nextLine();
-                    requestQueue.enqueue(new Request(department, medName, reqQty));
-                    break;
-                }
-
-                case 15: {
-                    Request processed = requestQueue.dequeue();
-                    if (processed != null) {
-                        System.out.println("Processing request:");
-                        processed.displayRequest();
-                    }
-                    break;
-                }
-
-                case 16:
-                    requestQueue.displayQueue();
-                    break;
-
-                // ---- Graph operations ----
-                case 17: {
-                    System.out.print("Enter starting location: ");
-                    String from = scanner.nextLine();
-                    System.out.print("Enter destination location: ");
-                    String to = scanner.nextLine();
+                // ---- Graph ----
+                case 13: {
+                    System.out.print("From location: "); String from = scanner.nextLine();
+                    System.out.print("To location: ");   String to   = scanner.nextLine();
                     graph.addRoute(from, to);
                     System.out.println("Route added.");
                     break;
                 }
 
+                case 14: graph.displayNetwork(); break;
+
+                // ---- Domain Classes ----
+                case 15: pharmacy.displayDetails(); break;
+                case 16: supplier.displayDetails(); break;
+                case 17: hospital.displayDetails(); break;
+
                 case 18:
-                    graph.displayNetwork();
-                    break;
-
-                // ---- OOP Info ----
-                case 19:
-                    System.out.println("\n=== OOP Entities ===");
-                    pharmacy.displayDetails();
-                    supplier.displayDetails();
-                    hospital.displayDetails();
-                    break;
-
-                // ---- Exit ----
-                case 0:
                     manager.saveInventory();
-                    System.out.println("Inventory saved. Goodbye!");
-                    scanner.close();
+                    System.out.println("Goodbye!");
                     return;
 
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                default: System.out.println("Invalid option.");
             }
         }
     }

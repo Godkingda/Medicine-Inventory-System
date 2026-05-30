@@ -1,14 +1,17 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// ============================================================
+// GRAPH: Adjacency list representation (HashMap of ArrayLists)
+// for the medicine distribution network between locations.
+// ============================================================
 public class DistributionGraph {
 
     private HashMap<String, ArrayList<String>> graph = new HashMap<>();
 
     public void addLocation(String location) {
-        if (!graph.containsKey(location)) {
+        if (!graph.containsKey(location))
             graph.put(location, new ArrayList<>());
-        }
     }
 
     public void addRoute(String from, String to) {
@@ -19,16 +22,12 @@ public class DistributionGraph {
     }
 
     public void displayNetwork() {
-        if (graph.isEmpty()) {
-            System.out.println("No distribution routes added yet.");
-            return;
-        }
+        if (graph.isEmpty()) { System.out.println("No distribution routes added yet."); return; }
         System.out.println("\nMedicine Distribution Network:");
         for (String location : graph.keySet()) {
-            System.out.print(location + " -> ");
-            for (String connected : graph.get(location)) {
-                System.out.print(connected + " ");
-            }
+            System.out.print("  " + location + " --> ");
+            for (String connected : graph.get(location))
+                System.out.print(connected + "  ");
             System.out.println();
         }
     }

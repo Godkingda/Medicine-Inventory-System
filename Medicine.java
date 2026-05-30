@@ -1,64 +1,67 @@
 import java.time.LocalDate;
 
-// Base class for all medicine types (supports Inheritance requirement)
-public class Medicine {
+// ============================================================
+// ABSTRACTION: Abstract class — cannot be instantiated directly.
+// Defines shared fields/methods for all medicine types.
+// Forces subclasses to implement getCategory() and getDosageInfo().
+//
+// INHERITANCE: Parent class of Tablet, Injection, Syrup.
+//
+// ENCAPSULATION: All fields private, accessed via getters/setters.
+// ============================================================
+public abstract class Medicine implements Displayable {
 
-    private int id;
+    // ENCAPSULATION: private fields
+    private int    id;
     private String name;
-    private int quantity;
+    private int    quantity;
     private String expiryDate;
-    private String category; // Added for category search
+    private double price;
 
-    public Medicine(int id, String name, int quantity, String expiryDate, String category) {
-        this.id = id;
-        this.name = name;
-        this.quantity = quantity;
+    public Medicine(int id, String name, int quantity, String expiryDate, double price) {
+        this.id         = id;
+        this.name       = name;
+        this.quantity   = quantity;
         this.expiryDate = expiryDate;
-        this.category = category;
-    }
-
-    // Backward-compatible constructor (defaults category to "General")
-    public Medicine(int id, String name, int quantity, String expiryDate) {
-        this(id, name, quantity, expiryDate, "General");
+        this.price      = price;
     }
 
     // Getters
-    public int getId()           { return id; }
-    public String getName()      { return name; }
-    public int getQuantity()     { return quantity; }
-    public String getExpiryDate(){ return expiryDate; }
-    public String getCategory()  { return category; }
+    public int    getId()          { return id; }
+    public String getName()        { return name; }
+    public int    getQuantity()    { return quantity; }
+    public String getExpiryDate()  { return expiryDate; }
+    public double getPrice()       { return price; }
 
     // Setters
     public void setQuantity(int quantity) { this.quantity = quantity; }
-    public void setCategory(String category) { this.category = category; }
+    public void setPrice(double price)    { this.price = price; }
 
     // Expiry check
     public boolean isExpired() {
-        LocalDate today = LocalDate.now();
-        LocalDate expiry = LocalDate.parse(expiryDate);
-        return expiry.isBefore(today);
+        return LocalDate.parse(expiryDate).isBefore(LocalDate.now());
     }
 
-    // Display method
+    // ABSTRACTION: subclasses must define these
+    public abstract String getCategory();
+    public abstract String getDosageInfo();
+
+    // Shared display logic (implements Displayable interface)
+    @Override
     public void displayDetails() {
-        System.out.println(toString());
-    }
-
-    // Subclasses can override for extra info
-    public String getExtraInfo() {
-        return "";
+        String status = isExpired() ? " ⚠ EXPIRED" : "";
+        System.out.println(
+            "[" + getCategory() + "] ID: " + id +
+            " | Name: " + name +
+            " | Qty: " + quantity +
+            " | Price: Rs." + price +
+            " | Expiry: " + expiryDate + status
+        );
+        System.out.println("   Dosage: " + getDosageInfo());
     }
 
     @Override
     public String toString() {
-        String status = isExpired() ? " ⚠ EXPIRED" : "";
-        String extra = getExtraInfo().isEmpty() ? "" : " | " + getExtraInfo();
-        return "ID: " + id +
-               " | Name: " + name +
-               " | Category: " + category +
-               " | Quantity: " + quantity +
-               " | Expiry: " + expiryDate +
-               extra + status;
+        return getCategory() + "," + id + "," + name + "," + quantity + "," + expiryDate + "," + price + "," + getDosageInfo();
     }
 }

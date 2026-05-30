@@ -1,22 +1,30 @@
-public class Request {
+// ============================================================
+// CLASS: Request — base class for department medicine requests.
+// Implements Displayable (ABSTRACTION via interface).
+// ============================================================
+public class Request implements Displayable {
 
     private String department;
     private String medicineName;
-    private int quantity;
+    private int    quantity;
 
     public Request(String department, String medicineName, int quantity) {
-        this.department = department;
+        this.department   = department;
         this.medicineName = medicineName;
-        this.quantity = quantity;
+        this.quantity     = quantity;
     }
 
     public String getDepartment()   { return department; }
     public String getMedicineName() { return medicineName; }
-    public int getQuantity()        { return quantity; }
+    public int    getQuantity()     { return quantity; }
 
-    public void displayRequest() {
-        System.out.println("Department: " + department +
+    @Override
+    public void displayDetails() {
+        System.out.println("Dept: " + department +
                            " | Medicine: " + medicineName +
-                           " | Quantity: " + quantity);
+                           " | Qty: " + quantity);
     }
+
+    // Keep backward compatibility
+    public void displayRequest() { displayDetails(); }
 }
